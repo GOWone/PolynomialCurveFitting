@@ -39,6 +39,11 @@
                 Padding="5"
                 Click="btn_ClearShowTable"
                 Content="清除显示" />
+            <Button
+                Margin="5"
+                Padding="5"
+                Click="btn_FittingCurve"
+                Content="拟合数据" />
             <Slider
                 Name="Slider_Order"
                 Width="200"
@@ -47,12 +52,12 @@
                 IsSnapToTickEnabled="True"
                 LargeChange="1"
                 Maximum="20"
-                Minimum="0"
+                Minimum="1"
                 Orientation="Horizontal"
                 SmallChange="1"
                 TickFrequency="1"
                 TickPlacement="BottomRight"
-                Value="0" />
+                Value="1" />
             <TextBlock
                 Margin="5,0,0,2"
                 HorizontalAlignment="Left"
@@ -60,6 +65,7 @@
                 FontSize="13"
                 Text="拟合多项式最高阶数:" />
             <TextBlock
+                x:Name="txt_Order"
                 Margin="5,0,0,2"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
@@ -79,12 +85,17 @@
                     FontStyle="Italic"
                     Text="参数信息:" />
 
-                <TextBlock
+                <TextBox
+                    x:Name="txt_params"
+                    MaxWidth="970"
                     Margin="5,0,0,0"
+                    BorderThickness="0"
                     FontSize="13"
                     FontStyle="Italic"
                     Foreground="LightGreen"
-                    Text="A=[] B=[] C=[] D[]" />
+                    IsReadOnly="True"
+                    Text="A=[] B=[] C=[] D[]"
+                    TextWrapping="Wrap" />
             </StackPanel>
 
 
