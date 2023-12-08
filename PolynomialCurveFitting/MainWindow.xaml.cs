@@ -39,6 +39,12 @@ namespace PolynomialCurveFitting
             WpfPlot2.Refresh();
         }
 
+
+        private void TestDemo()
+        {
+
+        }
+
         private void btn_InoutData(object sender, RoutedEventArgs e)
         {
 
