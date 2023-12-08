@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ScottPlot;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,41 @@ namespace PolynomialCurveFitting
         public MainWindow()
         {
             InitializeComponent();
+
+
+            // sample data
+            double[] xs = DataGen.Consecutive(51);
+            double[] sin = DataGen.Sin(51);
+
+            // plot the data
+            WpfPlot2.Plot.AddScatter(xs, sin);
+
+            WpfPlot2.Plot.XLabel("x");
+            WpfPlot2.Plot.YLabel("y");
+
+            WpfPlot2.Refresh();
         }
+
+        private void btn_InoutData(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void btn_ClearShowTable(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void btn_ClearLoadedData(object sender, RoutedEventArgs e)
+        {
+
+        }
+    }
+
+    public class Student
+    {
+        public string Name { get; set; }
+        public int Age { get; set; }
+        public string Gender { get; set; }
     }
 }
