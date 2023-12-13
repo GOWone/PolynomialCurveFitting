@@ -14,6 +14,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using PolynomialCurveFitting;
+using System.IO;
+using System.Windows.Markup;
+using Microsoft.Win32;
 
 namespace PolynomialCurveFitting
 {
@@ -268,6 +271,49 @@ namespace PolynomialCurveFitting
             txt_params.Text = param;
         }
 
+        double[] dataX = null;
+        double[] dataY = null;
+        int lineCount = 0;
+        private void readData(string file)
+        {
+            using (var reader = new StreamReader(file))
+            {
+                while (reader.ReadLine() != null)
+                {
+                    lineCount++;
+                }
+            }
+
+            StreamReader sr = new StreamReader(file, Encoding.Default);
+            string str = sr.ReadLine();
+            dataX = new double[lineCount];
+            dataY = new double[lineCount];
+            for (int i = 0; i < lineCount; i++)
+            {
+                if (str != null)
+                {
+                    string[] strs = str.Split(' ');
+                    try
+                    {
+                        if (strs.Length == 2)
+                        {
+                            dataX[i] = Convert.ToDouble(strs[0]);
+                            dataY[i] = Convert.ToDouble(strs[1]);
+                        }
+                        else
+                        {
+                            throw new Exception("读取文件过程中发生错误！文件格式不正确！");
+                        }
+                    }
+                    catch
+                    {
+                        throw new Exception("读取文件过程中发生错误！文件中含有非法数据！");
+                    }
+                    str = sr.ReadLine();
+                }
+            }
+        }
+
         private double max(double[] arr)
         {
             double maxValue = arr[0];
@@ -302,7 +348,22 @@ namespace PolynomialCurveFitting
 
         private void btn_InoutData(object sender, RoutedEventArgs e)
         {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
 
+            openFileDialog.Filter = "文本文件 (*.txt)|*.txt|所有文件 (*.*)|*.*";
+            openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+
+            bool? result = openFileDialog.ShowDialog();
+            if (result == true)
+            {
+                // 获取所选文件的路径
+                string filePath = openFileDialog.FileName;
+                readData(filePath);
+
+                WpfPlot2.Plot.Clear();
+                WpfPlot2.Plot.AddScatter(dataX, dataY);
+                WpfPlot2.Refresh();
+            }
         }
 
         private void btn_ClearShowTable(object sender, RoutedEventArgs e)
@@ -324,6 +385,38 @@ namespace PolynomialCurveFitting
         }
 
         private void btn_FittingCurve(object sender, RoutedEventArgs e)
+        {
+            WpfPlot2.Plot.Clear();
+            WpfPlot2.Plot.AddScatter(dataX, dataY);
+            if (dataX != null && dataY != null)
+            {
+                int order = int.Parse(txt_Order.Text.ToString());
+                double[] args = LeastSquares.MultiLine(dataX, dataY, lineCount, order);
+
+                double[] Xs = new double[1000];
+                double[] Ys = new double[1000];
+                Xs[0] = dataX[0];
+                Ys[0] = getYvalue(Xs[0], args);
+                double step = (max(dataX) - min(dataX)) / 1000;
+
+                for (int i = 1; i < 1000; i++)
+                {
+                    Xs[i] = Xs[i - 1] + step;
+                    Ys[i] = getYvalue(Xs[i], args);
+                }
+                WpfPlot2.Plot.AddScatter(Xs, Ys);
+                WpfPlot2.Refresh();
+
+                string param = null;
+                for (int i = 0; i < args.Length; i++)
+                {
+                    param += args[i] + " ";
+                }
+                txt_params.Text = param;
+            }
+        }
+
+        private void btn_TestFittingCurve(object sender, RoutedEventArgs e)
         {
             TestDemo();
         }
