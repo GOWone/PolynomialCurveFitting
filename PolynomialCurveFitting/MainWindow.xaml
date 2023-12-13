@@ -44,6 +44,11 @@
                 Padding="5"
                 Click="btn_FittingCurve"
                 Content="拟合数据" />
+            <Button
+                Margin="5"
+                Padding="5"
+                Click="btn_TestFittingCurve"
+                Content="Example" />
             <Slider
                 Name="Slider_Order"
                 Width="200"
